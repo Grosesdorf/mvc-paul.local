@@ -19,33 +19,45 @@ class Router{
     }
 
     public function run(){
-        // Получаем строку запроса
+        // РџРѕР»СѓС‡Р°РµРј СЃС‚СЂРѕРєСѓ Р·Р°РїСЂРѕСЃР°
         $uri = $this->getUri();
 
-        // Проверяем наличие такого запроса в routes.php
+        // РџСЂРѕРІРµСЂСЏРµРј РЅР°Р»РёС‡РёРµ С‚Р°РєРѕРіРѕ Р·Р°РїСЂРѕСЃР° РІ routes.php
         foreach ($this->routers as $uriPattern => $path) {
 
-            // Сравниваем $uriPattern & $path
+            // РЎСЂР°РІРЅРёРІР°РµРј $uriPattern & $path
             if(preg_match("~$uriPattern~", $uri)){
-                // Определяем controller и action
 
-                $element = explode("/", $path);
+                // РџРѕР»СѓС‡Р°РµРј РІРЅСѓС‚СЂРµРЅРЅРёР№ РїСѓС‚СЊ РёР· РІРЅРµС€РЅРµРіРѕ
+                $internalRoute = preg_replace("~$uriPattern~", $path, $uri);
+//                echo $internalRoute;
+
+                // РћРїСЂРµРґРµР»СЏРµРј controller Рё action
+
+                $element = explode("/", $internalRoute);
 
                 $controllerName = ucfirst(array_shift($element) . 'Controller');
                 $actionName = 'action' . ucfirst(array_shift($element));
 
-                // Подкючаем файл контроллера
+                $parameters = $element;
+//                echo '<pre>';
+//                print_r($parameters);
+
+                // РџРѕРґРєСЋС‡Р°РµРј С„Р°Р№Р» РєРѕРЅС‚СЂРѕР»Р»РµСЂР°
                 $controllerFile = ROOT . '/app/controllers/' . $controllerName . '.php';
 
                 if(file_exists($controllerFile)){
                     include_once($controllerFile);
                 }
 
-                //Создаем объект, вызываем action
+                //РЎРѕР·РґР°РµРј РѕР±СЉРµРєС‚, РІС‹Р·С‹РІР°РµРј action
                 $controllerObject = new $controllerName;
-                if($controllerObject->$actionName()){
-                    break;
-                }
+
+                $result = call_user_func_array(array($controllerObject, $actionName), $parameters);
+
+//                if($controllerObject->$actionName()){
+//                    break;
+//                }
             }
         }
 
