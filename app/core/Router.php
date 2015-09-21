@@ -30,7 +30,6 @@ class Router{
 
                 // Получаем внутренний путь из внешнего
                 $internalRoute = preg_replace("~$uriPattern~", $path, $uri);
-//                echo $internalRoute;
 
                 // Определяем controller и action
 
@@ -40,8 +39,6 @@ class Router{
                 $actionName = 'action' . ucfirst(array_shift($element));
 
                 $parameters = $element;
-//                echo '<pre>';
-//                print_r($parameters);
 
                 // Подкючаем файл контроллера
                 $controllerFile = ROOT . '/app/controllers/' . $controllerName . '.php';
@@ -55,9 +52,9 @@ class Router{
 
                 $result = call_user_func_array(array($controllerObject, $actionName), $parameters);
 
-//                if($controllerObject->$actionName()){
-//                    break;
-//                }
+                if($result != null){
+                    break;
+                }
             }
         }
 

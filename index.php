@@ -14,6 +14,8 @@ require_once(ROOT . '/app/core/Router.php');
 
 // 3. DB connection
 
+require_once(ROOT . '/app/core/Db.php');
+
 // 4. Call Router
 
 $router = new Router();
